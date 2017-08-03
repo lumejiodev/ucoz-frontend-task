@@ -49,6 +49,7 @@ export default class BookManager {
 
     clearFields() {
         Fields.forEach( fieldName => this.$fields[fieldName].value = '' );
+        this.$fields.id.value = 0;
     }
 
     attachEvents() {
