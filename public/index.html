@@ -8,7 +8,7 @@
 	<link rel="stylesheet" href="build/main.css">
 </head>
 <body>
-	<div id="root" class="wrapper card__container">
+	<div id="book-manager" class="wrapper card__container">
 		<div class="card">
 			<h3 class="card__title">Добавление новой книги</h3>
 
@@ -25,13 +25,13 @@
 			<input id="pages" name="pages" type="text" class="form__field">
 
 			<input type="hidden" name="id" value="0">
-			<button class="form__submit">Добавить</button>
+			<button class="form__submit js-book-submit">Добавить</button>
 		</div>
 
 		<div class="card">
 			<h3 class="card__title">Сохраненные книги</h3>
 
-			<ul class="list"></ul>
+			<ul class="list js-book-list"></ul>
 		</div>
 	</div>
 	<script src="build/main.js"></script>
