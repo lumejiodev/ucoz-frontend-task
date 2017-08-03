@@ -5,6 +5,14 @@
 .list {
     list-style: none;
 
+    &:empty::after {
+        content: "Список пуст";
+        display: block;
+        padding: 1em;
+        opacity: .2;
+        text-align: center;
+    }
+
     &__item {
         padding: .5em 1em;
         margin: 0 -1em;
