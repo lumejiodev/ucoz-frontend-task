@@ -6,6 +6,12 @@ $fw-body: 500; // font-weight
 $fz-body: 16px; // font-size
 $ff-body: "Helvetica Neue", Arial, sans-serif; // font-family
 
+// Colors
+$color-light-gray: #f7f9fa;
+
 // Colors applied
-$ca-body: white;
+$ca-body: $color-light-gray;
 $ca-text: black;
+$ca-border: $color-light-gray;
+
+$ca-card-background: white;

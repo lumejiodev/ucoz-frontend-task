@@ -1,0 +1,28 @@
+/* =========================================
+                Page Card Styles
+   ========================================= */
+
+.card {
+    $margin: 10px;
+
+    box-sizing: border-box;
+    width: calc(50% - #{$margin * 2});
+    padding: 1em;
+    margin: $margin;
+    box-shadow: 0 2px 8px -4px black;
+    background: $ca-card-background;
+
+    &__container {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+
+    &__title {
+        margin: 1em 0;
+
+        &:first-child {
+            margin-top: 0;
+        }
+    }
+}

@@ -1,0 +1,53 @@
+/* =========================================
+            Book List Styles
+   ========================================= */
+
+.list {
+    list-style: none;
+
+    &__item {
+        padding: .5em 1em;
+        margin: 0 -1em;
+        border-bottom: 1px solid $ca-border;
+        transition: background .3s;
+
+        &:last-child {
+            border-bottom: 0;
+        }
+
+        &:hover {
+            background-color: $ca-border;
+        }
+    }
+
+    &__title {
+        margin: 0;
+        font-size: 1em;
+    }
+
+    &__subtitle {
+        font-size: .8em;
+    }
+
+    &__actions {
+        float: right;
+        font-size: .75em;
+    }
+
+    &__button {
+        display: inline-block;
+        margin-left: .5em;
+        cursor: pointer;
+        color: blue;
+        opacity: .5;
+        transition: .3s;
+
+        &--remove {
+            color: red;
+        }
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+}
