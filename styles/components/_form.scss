@@ -10,8 +10,10 @@
     }
 
     &__field {
+        box-sizing: border-box;
         display: block;
-        min-width: 66%;
+        width: 350px;
+        max-width: 100%;
         margin-bottom: 1em;
         font-size: 1rem;
     }

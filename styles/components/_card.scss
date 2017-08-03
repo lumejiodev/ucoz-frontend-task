@@ -25,4 +25,8 @@
             margin-top: 0;
         }
     }
+
+    @media (max-width: $bp-mobile) {
+        width: calc(100% - #{$margin * 2});
+    }
 }
