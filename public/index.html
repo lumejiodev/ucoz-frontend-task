@@ -8,7 +8,41 @@
 	<link rel="stylesheet" href="build/main.css">
 </head>
 <body>
-	<div id="root" class="wrapper"></div>
+	<div id="root" class="wrapper">
+		<div class="card">
+			<h3 class="card__title">Добавление новой книги</h3>
+
+			<label for="author" class="form__label">Автор</label>
+			<input id="author" name="author" type="text" class="form__field">
+
+			<label for="year" class="form__label">Год издания</label>
+			<input id="year" name="year" type="text" class="form__field">
+
+			<label for="title" class="form__label">Название книги</label>
+			<input id="title" name="title" type="text" class="form__field">
+
+			<label for="pages" class="form__label">Количество страниц</label>
+			<input id="pages" name="pages" type="text" class="form__field">
+
+			<input type="hidden" name="id" value="0">
+			<button class="form__submit">Добавить</button>
+		</div>
+
+		<div class="card">
+			<h3 class="card__title">Сохраненные книги</h3>
+
+			<ul class="list">
+				<li class="list__item" data-id="1">
+					<h5 class="list__title">Название книги</h5>
+					<p class="list__subtitle">Автор</p>
+					<div class="list__actions">
+						<a class="list__button">Изменить</a>
+						<a class="list__button list__button--remove">Удалить</a>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div>
 	<script src="build/main.js"></script>
 </body>
 </html>
