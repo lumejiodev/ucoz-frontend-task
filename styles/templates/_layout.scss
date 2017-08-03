@@ -1,0 +1,16 @@
+/* =========================================
+		      Layout Elements
+   ========================================= */
+
+body {
+    font: $fw-body #{$fz-body}/1.25 $ff-body;
+    color: $ca-text;
+    background: $ca-body;
+}
+
+.wrapper {
+    box-sizing: border-box;
+    width: 90%;
+    max-width: 992px;
+    margin: 0 auto;
+}
