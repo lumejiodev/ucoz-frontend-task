@@ -6,6 +6,7 @@ export default class BookManager {
         this.node = node;
         this.$fields = this.getFieldNodes();
         this.$submit = node.querySelector('.js-book-submit');
+        this.$cancel = node.querySelector('.js-book-cancel');
         this.$list = node.querySelector('.js-book-list');
         this.$formTitle = node.querySelector('.js-form-title');
 
@@ -27,6 +28,7 @@ export default class BookManager {
 
     attachEvents() {
         this.$submit.addEventListener('click', this.submitHandler.bind( this ) );
+        this.$cancel.addEventListener('click', this.cancelHandler.bind( this ) );
     }
 
     raiseIterator() {
@@ -64,8 +66,7 @@ export default class BookManager {
 
         if (+this.$fields.id.value === itemId) {
             // сброс формы, если удалить редактирующуюся книгу
-            this.toggleEditMode( false );
-            this.clearFields();
+            this.cancelHandler();
         }
 
         delete this.books[itemId];
@@ -96,10 +97,16 @@ export default class BookManager {
         }
     }
 
+    cancelHandler() {
+        this.toggleEditMode( false );
+        this.clearFields();
+    }
+
     toggleEditMode( state = !this.editMode, itemId = -1 ) {
         this.editMode = state;
         this.$formTitle.textContent = state ? Texts.EDIT_EXISTING_BOOK : Texts.ADD_NEW_BOOK;
         this.$submit.textContent = state ? Texts.SAVE : Texts.ADD;
+        this.$cancel.style.display = state ? 'inline-block' : 'none';
 
         if (state) { // режим редактирования
             let book = this.books[itemId];
