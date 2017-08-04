@@ -62,6 +62,12 @@ export default class BookManager {
             this.idIterator--;
         }
 
+        if (+this.$fields.id.value === itemId) {
+            // сброс формы, если удалить редактирующуюся книгу
+            this.toggleEditMode( false );
+            this.clearFields();
+        }
+
         delete this.books[itemId];
     }
 
