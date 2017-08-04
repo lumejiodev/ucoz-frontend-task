@@ -21,26 +21,43 @@ export default class BookManager {
         return nodes;
     }
 
-    getIterationId() {
+    raiseIterator() {
         this.idIterator++;
-        // обновление в LocalStorage
-        return this.idIterator;
+        // todo: обновление в LocalStorage
     }
 
     createItemNode() {
         const bookTitle = escapeHtml( this.$fields.title.value );
         const bookAuthor = escapeHtml( this.$fields.author.value );
 
+        this.raiseIterator();
+
         let node = document.createElement('li');
-            node.className = 'list__item';
-            node.setAttribute('data-id', this.getIterationId() );
+            node.className = 'list__item js-item';
+            node.setAttribute('data-id', this.idIterator );
             node.innerHTML = `<div class="list__actions">
-                    <a class="list__button">Изменить</a>
-                    <a class="list__button list__button--remove">Удалить</a>
+                    <a class="list__button js-item-edit">Изменить</a>
+                    <a class="list__button list__button--remove js-item-remove">Удалить</a>
                 </div>
                 <h5 class="list__title">${bookTitle}</h5>
                 <p class="list__subtitle">${bookAuthor}</p>`;
         return node;
+    }
+
+    removeItemNode( $trigger ) {
+        let $itemNode = $trigger.parentNode;
+        while ($itemNode.classList.contains('js-item') === false && $itemNode !== this.$list) {
+            $itemNode = $itemNode.parentNode;
+        }
+        this.$list.removeChild( $itemNode );
+
+        const itemId = $itemNode.getAttribute('data-id');
+        // todo: обновление в LocalStorage
+
+        if (itemId == this.idIterator) {
+            this.idIterator--;
+            // если удаляется последняя созданная книга, то ID освобождается
+        }
     }
 
     validateFields() {
@@ -54,6 +71,7 @@ export default class BookManager {
 
     attachEvents() {
         this.$submit.addEventListener('click', this.submitHandler.bind( this ) );
+        this.$list.addEventListener('click', this.listClickHandler.bind( this ) );
     }
 
     submitHandler( e ) {
@@ -69,5 +87,15 @@ export default class BookManager {
         } else {
             alert('Не все поля заполнены');
         }
+    }
+
+    listClickHandler( e ) {
+        if (e.target.classList.contains('js-item-edit')) {
+            // редактирование книги
+        } else if (e.target.classList.contains('js-item-remove')) {
+            // удаление книги
+            this.removeItemNode( e.target );
+        }
+        e.preventDefault();
     }
 }
