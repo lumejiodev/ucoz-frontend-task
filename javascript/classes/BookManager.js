@@ -1,5 +1,5 @@
 import { Fields, Texts } from '../constants';
-import escapeHtml from '../utils/escapeHtml';
+import BookItem from './BookItem';
 
 export default class BookManager {
     constructor( node ) {
@@ -11,6 +11,8 @@ export default class BookManager {
 
         this.idIterator = 0;
         this.editMode = false;
+
+        this.books = {};
 
         this.attachEvents();
     }
@@ -28,35 +30,26 @@ export default class BookManager {
         // todo: обновление в LocalStorage
     }
 
-    createItemNode() {
-        const bookTitle = escapeHtml( this.$fields.title.value );
-        const bookAuthor = escapeHtml( this.$fields.author.value );
-
+    createItem() {
         this.raiseIterator();
 
-        let node = document.createElement('li');
-            node.className = 'list__item js-item';
-            node.setAttribute('data-id', this.idIterator );
-            node.innerHTML = `<div class="list__actions">
-                    <a class="list__button js-item-edit">Изменить</a>
-                    <a class="list__button list__button--remove js-item-remove">Удалить</a>
-                </div>
-                <h5 class="list__title">${bookTitle}</h5>
-                <p class="list__subtitle">${bookAuthor}</p>`;
-        return node;
+        let book = this.books[this.idIterator] = new BookItem( this.idIterator );
+            book.setTitle( this.$fields.title.value );
+            book.setAuthor( this.$fields.author.value );
+
+        this.$list.appendChild( book.$node );
     }
 
-    updateItemNode( itemId ) {
-        const bookTitle = this.$fields.title.value;
-        const bookAuthor = this.$fields.author.value;
-
-        const $itemNode = this.$list.querySelector(`[data-id="${itemId}"]`);
-        $itemNode.querySelector('.list__title').textContent = bookTitle;
-        $itemNode.querySelector('.list__subtitle').textContent = bookAuthor;
+    updateItem( itemId ) {
+        let book = this.books[itemId];
+            book.setTitle( this.$fields.title.value );
+            book.setAuthor( this.$fields.author.value );
     }
 
     removeItemNode( $itemNode, itemId = -1 ) {
         this.$list.removeChild( $itemNode );
+
+        delete this.books[this.idIterator];
 
         if (itemId == this.idIterator) {
             // если удаляется последняя созданная книга, то ID освобождается
@@ -83,12 +76,11 @@ export default class BookManager {
             if (this.editMode) {
                 // редактирование существующей книги
                 const id = this.$fields.id.value;
-                this.updateItemNode( id );
+                this.updateItem( id );
                 this.toggleEditMode( false );
             } else {
                 // добавление новой книги
-                const $itemNode = this.createItemNode();
-                this.$list.appendChild( $itemNode );
+                this.createItem();
             }
             this.clearFields();
         } else {
