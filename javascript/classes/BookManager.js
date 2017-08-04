@@ -1,4 +1,4 @@
-import { Fields } from '../constants';
+import { Fields, Texts } from '../constants';
 import escapeHtml from '../utils/escapeHtml';
 
 export default class BookManager {
@@ -7,8 +7,10 @@ export default class BookManager {
         this.$fields = this.getFieldNodes();
         this.$submit = node.querySelector('.js-book-submit');
         this.$list = node.querySelector('.js-book-list');
+        this.$formTitle = node.querySelector('.js-form-title');
 
         this.idIterator = 0;
+        this.editMode = false;
 
         this.attachEvents();
     }
@@ -44,19 +46,12 @@ export default class BookManager {
         return node;
     }
 
-    removeItemNode( $trigger ) {
-        let $itemNode = $trigger.parentNode;
-        while ($itemNode.classList.contains('js-item') === false && $itemNode !== this.$list) {
-            $itemNode = $itemNode.parentNode;
-        }
+    removeItemNode( $itemNode, itemId = -1 ) {
         this.$list.removeChild( $itemNode );
 
-        const itemId = $itemNode.getAttribute('data-id');
-        // todo: обновление в LocalStorage
-
         if (itemId == this.idIterator) {
-            this.idIterator--;
             // если удаляется последняя созданная книга, то ID освобождается
+            this.idIterator--;
         }
     }
 
@@ -85,17 +80,31 @@ export default class BookManager {
                 // редактирование существующей книги
             }
         } else {
-            alert('Не все поля заполнены');
+            alert( Texts.ALL_FIELDS_ARE_REQUIRED );
         }
     }
 
     listClickHandler( e ) {
-        if (e.target.classList.contains('js-item-edit')) {
-            // редактирование книги
-        } else if (e.target.classList.contains('js-item-remove')) {
-            // удаление книги
-            this.removeItemNode( e.target );
+        const classList = e.target.classList;
+        if (classList.contains('js-item-edit') || classList.contains('js-item-remove')) {
+            let $itemNode = e.target.parentNode;
+            while ($itemNode.classList.contains('js-item') === false && $itemNode !== this.$list) {
+                $itemNode = $itemNode.parentNode;
+            }
+
+            const itemId = $itemNode.getAttribute('data-id');
+
+            if (classList.contains('js-item-remove')) {
+                this.removeItemNode( $itemNode, itemId );
+            } else {
+                this.toggleEditMode( true, $itemNode, itemId );
+            }
         }
         e.preventDefault();
+    }
+
+    toggleEditMode( state = !this.editMode, $itemNode = null, itemId = -1 ) {
+        this.editMode = state;
+        this.$formTitle.textContent = state ? Texts.EDIT_EXISTING_BOOK : Texts.ADD_NEW_BOOK;
     }
 }
