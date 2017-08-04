@@ -28,13 +28,32 @@ export default class BookManager {
         return nodes;
     }
 
+    getFieldValues() {
+        let values = {};
+        Fields.forEach( fieldName => {
+            if (fieldName === 'id') return;
+            values[fieldName] = this.$fields[fieldName].value;
+        });
+        return values;
+    }
+
     attachEvents() {
         this.$submit.addEventListener('click', this.submitHandler.bind( this ) );
         this.$cancel.addEventListener('click', this.cancelHandler.bind( this ) );
     }
 
     initLocalStorage() {
-        this.idIterator = StorageHelper.getOrSet('id-iterator', 0 );
+        this.idIterator = +StorageHelper.getOrSet('id-iterator', 0 );
+
+        if (this.idIterator > 0) {
+            for (let i = 1; i <= this.idIterator; i++) {
+                const item = StorageHelper.getItem('book-' + i);
+                if (item) { // проверка, что в ячейке не пусто
+                    const book = JSON.parse( item );
+                    this.createItemNode( i, book.title, book.author );
+                }
+            }
+        }
     }
 
     raiseIterator() {
@@ -44,12 +63,19 @@ export default class BookManager {
     createItem() {
         this.raiseIterator();
 
-        let book = this.books[this.idIterator] = new BookItem( this.idIterator );
-            book.setTitle( this.$fields.title.value );
-            book.setAuthor( this.$fields.author.value );
+        const { title, author } = this.$fields;
+        this.createItemNode( this.idIterator, title.value, author.value );
 
-        book.$edit.addEventListener('click', e => this.toggleEditMode( true, book.id ) );
-        book.$remove.addEventListener('click', e => this.removeItem( book.id ) );
+        StorageHelper.setItem('book-' + this.idIterator, JSON.stringify( this.getFieldValues() ) );
+    }
+
+    createItemNode( id, title, author ) {
+        let book = this.books[id] = new BookItem( id );
+            book.setTitle( title );
+            book.setAuthor( author );
+
+        book.$edit.addEventListener('click', e => this.toggleEditMode( true, id ) );
+        book.$remove.addEventListener('click', e => this.removeItem( id ) );
 
         this.$list.appendChild( book.$node );
     }

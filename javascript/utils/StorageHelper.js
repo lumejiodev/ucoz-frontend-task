@@ -25,7 +25,7 @@ export default class StorageHelper {
     static getItem( id ) {
         if (checkLocalStorage() === false) return;
 
-        localStorage.getItem( id );
+        return localStorage.getItem( id );
     }
 
     static setItem( id, value ) {
