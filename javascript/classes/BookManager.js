@@ -1,4 +1,5 @@
 import { Fields, Texts } from '../constants';
+import StorageHelper from '../utils/StorageHelper';
 import BookItem from './BookItem';
 
 export default class BookManager {
@@ -16,6 +17,7 @@ export default class BookManager {
         this.books = {};
 
         this.attachEvents();
+        this.initLocalStorage();
     }
 
     getFieldNodes() {
@@ -31,9 +33,12 @@ export default class BookManager {
         this.$cancel.addEventListener('click', this.cancelHandler.bind( this ) );
     }
 
+    initLocalStorage() {
+        this.idIterator = StorageHelper.getOrSet('id-iterator', 0 );
+    }
+
     raiseIterator() {
-        this.idIterator++;
-        // todo: обновление в LocalStorage
+        StorageHelper.setItem('id-iterator', ++this.idIterator );
     }
 
     createItem() {
@@ -61,7 +66,7 @@ export default class BookManager {
 
         if (itemId == this.idIterator) {
             // если удаляется последняя созданная книга, то ID освобождается
-            this.idIterator--;
+            StorageHelper.setItem('id-iterator', --this.idIterator );
         }
 
         if (+this.$fields.id.value === itemId) {
