@@ -41,8 +41,8 @@ export default class BookManager {
             book.setTitle( this.$fields.title.value );
             book.setAuthor( this.$fields.author.value );
 
-        book.$edit.addEventListener('click', this.bookClickEdit.bind( this, book ) );
-        book.$remove.addEventListener('click', this.bookClickRemove.bind( this, book ) );
+        book.$edit.addEventListener('click', e => this.toggleEditMode( true, book.id ) );
+        book.$remove.addEventListener('click', e => this.removeItem( book.id ) );
 
         this.$list.appendChild( book.$node );
     }
@@ -88,14 +88,6 @@ export default class BookManager {
         } else {
             alert( Texts.ALL_FIELDS_ARE_REQUIRED );
         }
-    }
-
-    bookClickEdit( book, e ) {
-        this.toggleEditMode( true, book.id );
-    }
-
-    bookClickRemove( book, e ) {
-        this.removeItem( book.id );
     }
 
     toggleEditMode( state = !this.editMode, itemId = -1 ) {
