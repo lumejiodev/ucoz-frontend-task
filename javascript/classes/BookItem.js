@@ -15,6 +15,8 @@ export default class BookItem {
         this.$node = $node;
         this.$title = $node.querySelector('.list__title');
         this.$author = $node.querySelector('.list__subtitle');
+        this.$edit = $node.querySelector('.js-item-edit');
+        this.$remove = $node.querySelector('.js-item-remove');
     }
 
     setTitle( title ) {
@@ -23,5 +25,13 @@ export default class BookItem {
 
     setAuthor( author ) {
         this.$author.textContent = author;
+    }
+
+    get title() {
+        return this.$title.textContent;
+    }
+
+    get author() {
+        return this.$author.textContent;
     }
 }

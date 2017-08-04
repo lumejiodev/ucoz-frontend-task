@@ -25,6 +25,10 @@ export default class BookManager {
         return nodes;
     }
 
+    attachEvents() {
+        this.$submit.addEventListener('click', this.submitHandler.bind( this ) );
+    }
+
     raiseIterator() {
         this.idIterator++;
         // todo: обновление в LocalStorage
@@ -37,6 +41,9 @@ export default class BookManager {
             book.setTitle( this.$fields.title.value );
             book.setAuthor( this.$fields.author.value );
 
+        book.$edit.addEventListener('click', this.bookClickEdit.bind( this, book ) );
+        book.$remove.addEventListener('click', this.bookClickRemove.bind( this, book ) );
+
         this.$list.appendChild( book.$node );
     }
 
@@ -46,15 +53,16 @@ export default class BookManager {
             book.setAuthor( this.$fields.author.value );
     }
 
-    removeItemNode( $itemNode, itemId = -1 ) {
-        this.$list.removeChild( $itemNode );
-
-        delete this.books[this.idIterator];
+    removeItem( itemId ) {
+        let book = this.books[itemId];
+        this.$list.removeChild( book.$node );
 
         if (itemId == this.idIterator) {
             // если удаляется последняя созданная книга, то ID освобождается
             this.idIterator--;
         }
+
+        delete this.books[itemId];
     }
 
     validateFields() {
@@ -66,17 +74,11 @@ export default class BookManager {
         this.$fields.id.value = 0;
     }
 
-    attachEvents() {
-        this.$submit.addEventListener('click', this.submitHandler.bind( this ) );
-        this.$list.addEventListener('click', this.listClickHandler.bind( this ) );
-    }
-
     submitHandler( e ) {
         if (this.validateFields()) {
             if (this.editMode) {
                 // редактирование существующей книги
-                const id = this.$fields.id.value;
-                this.updateItem( id );
+                this.updateItem( this.$fields.id.value );
                 this.toggleEditMode( false );
             } else {
                 // добавление новой книги
@@ -88,34 +90,24 @@ export default class BookManager {
         }
     }
 
-    listClickHandler( e ) {
-        const classList = e.target.classList;
-        if (classList.contains('js-item-edit') || classList.contains('js-item-remove')) {
-            let $itemNode = e.target.parentNode;
-            while ($itemNode.classList.contains('js-item') === false && $itemNode !== this.$list) {
-                $itemNode = $itemNode.parentNode;
-            }
-
-            const itemId = $itemNode.getAttribute('data-id');
-
-            if (classList.contains('js-item-remove')) {
-                this.removeItemNode( $itemNode, itemId );
-            } else {
-                this.toggleEditMode( true, $itemNode, itemId );
-            }
-        }
-        e.preventDefault();
+    bookClickEdit( book, e ) {
+        this.toggleEditMode( true, book.id );
     }
 
-    toggleEditMode( state = !this.editMode, $itemNode = null, itemId = -1 ) {
+    bookClickRemove( book, e ) {
+        this.removeItem( book.id );
+    }
+
+    toggleEditMode( state = !this.editMode, itemId = -1 ) {
         this.editMode = state;
         this.$formTitle.textContent = state ? Texts.EDIT_EXISTING_BOOK : Texts.ADD_NEW_BOOK;
         this.$submit.textContent = state ? Texts.SAVE : Texts.ADD;
 
-        if (state) {
+        if (state) { // режим редактирования
+            let book = this.books[itemId];
             this.$fields.id.value = itemId;
-            this.$fields.title.value = $itemNode.querySelector('.list__title').textContent;
-            this.$fields.author.value = $itemNode.querySelector('.list__subtitle').textContent;
+            this.$fields.title.value = book.title;
+            this.$fields.author.value = book.author;
         }
     }
 }
