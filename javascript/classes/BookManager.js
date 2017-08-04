@@ -46,6 +46,15 @@ export default class BookManager {
         return node;
     }
 
+    updateItemNode( itemId ) {
+        const bookTitle = this.$fields.title.value;
+        const bookAuthor = this.$fields.author.value;
+
+        const $itemNode = this.$list.querySelector(`[data-id="${itemId}"]`);
+        $itemNode.querySelector('.list__title').textContent = bookTitle;
+        $itemNode.querySelector('.list__subtitle').textContent = bookAuthor;
+    }
+
     removeItemNode( $itemNode, itemId = -1 ) {
         this.$list.removeChild( $itemNode );
 
@@ -71,14 +80,17 @@ export default class BookManager {
 
     submitHandler( e ) {
         if (this.validateFields()) {
-            if (this.$fields.id.value == 0) {
+            if (this.editMode) {
+                // редактирование существующей книги
+                const id = this.$fields.id.value;
+                this.updateItemNode( id );
+                this.toggleEditMode( false );
+            } else {
                 // добавление новой книги
                 const $itemNode = this.createItemNode();
                 this.$list.appendChild( $itemNode );
-                this.clearFields();
-            } else {
-                // редактирование существующей книги
             }
+            this.clearFields();
         } else {
             alert( Texts.ALL_FIELDS_ARE_REQUIRED );
         }
@@ -106,5 +118,12 @@ export default class BookManager {
     toggleEditMode( state = !this.editMode, $itemNode = null, itemId = -1 ) {
         this.editMode = state;
         this.$formTitle.textContent = state ? Texts.EDIT_EXISTING_BOOK : Texts.ADD_NEW_BOOK;
+        this.$submit.textContent = state ? Texts.SAVE : Texts.ADD;
+
+        if (state) {
+            this.$fields.id.value = itemId;
+            this.$fields.title.value = $itemNode.querySelector('.list__title').textContent;
+            this.$fields.author.value = $itemNode.querySelector('.list__subtitle').textContent;
+        }
     }
 }
