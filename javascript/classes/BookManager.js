@@ -81,9 +81,12 @@ export default class BookManager {
     }
 
     updateItem( itemId ) {
+        const { title, author } = this.$fields;
         let book = this.books[itemId];
-            book.setTitle( this.$fields.title.value );
-            book.setAuthor( this.$fields.author.value );
+            book.setTitle( title.value );
+            book.setAuthor( author.value );
+
+        StorageHelper.setItem('book-' + itemId, JSON.stringify( this.getFieldValues() ) );
     }
 
     removeItem( itemId ) {
@@ -101,6 +104,7 @@ export default class BookManager {
         }
 
         delete this.books[itemId];
+        StorageHelper.removeItem('book-' + itemId );
     }
 
     validateFields() {
@@ -140,10 +144,15 @@ export default class BookManager {
         this.$cancel.style.display = state ? 'inline-block' : 'none';
 
         if (state) { // режим редактирования
-            let book = this.books[itemId];
             this.$fields.id.value = itemId;
-            this.$fields.title.value = book.title;
-            this.$fields.author.value = book.author;
+            const item = StorageHelper.getItem('book-' + itemId );
+            if (item) {
+                const book = JSON.parse( item );
+                Fields.forEach( fieldName => {
+                    if (fieldName === 'id') return;
+                    this.$fields[fieldName].value = book[fieldName];
+                });
+            }
         }
     }
 }
